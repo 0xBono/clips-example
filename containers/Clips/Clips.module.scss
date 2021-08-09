@@ -1,32 +1,15 @@
-.video-wrap {
-  position: relative;
-  width: 640px;
-  height: 480px;
+.wrap {
+  width: 100%;
+  max-width: 512px;
+  margin: 0 auto;
 }
 
-.video-up {
-  position: absolute;
-  top: 80%;
-  left: 50%;
-  transform: translateX(-50%);
+.webcam {
+  width: 100%;
+  height: 512px;
 }
 
-.title {
-  padding: 4px 24px;
-  font-size: 16px;
-  color: #fff;
-  background-color: #f0f0f028;
-  text-align: center;
-}
-
-.video {
-  z-index: -1;
-}
-
-.canvas {
-  position: absolute;
-  width: 640px;
-  height: 480px;
-  left: 0;
-  z-index: 999;
+.button {
+  width: 64px;
+  background-color: #fff;
 }
