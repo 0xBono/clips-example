@@ -8,12 +8,12 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <Fragment>
       <Head>
-        <title>HEARING</title>
+        <title>Clips</title>
         <meta
           name="viewport"
           content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
         />
-        <meta property="og:title" content="HEARING" key="page_title" />
+        <meta property="og:title" content="Clips" key="page_title" />
       </Head>
       <Component {...pageProps} />
     </Fragment>
