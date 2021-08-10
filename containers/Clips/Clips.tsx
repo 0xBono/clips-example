@@ -7,26 +7,26 @@ import styles from './Clips.module.scss';
 const cx = classNames.bind(styles);
 
 export const Clips: React.FC = () => {
-  const [videoSource, setVideoSource] = useState({});
-  const [selectedVideoSource, setSelectedVideoSource] = useState();
+  const [enumerateDevices, setEnumerateDevices] = useState({});
+  const [videoSource, setVideoSource] = useState();
   const videoRef = useRef<HTMLVideoElement>(null);
   const selectRef = useRef<HTMLSelectElement>(null);
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: { deviceId: selectedVideoSource } }).then((stream) => {
+    navigator.mediaDevices.getUserMedia({ video: { deviceId: videoSource } }).then((stream) => {
       (videoRef.current as HTMLVideoElement).srcObject = stream;
     });
     const enumerateDevices = () => {
       navigator.mediaDevices.enumerateDevices().then((devices) => {
         const result = devices.filter((device) => device.kind === 'videoinput');
-        return setVideoSource(result);
+        return setEnumerateDevices(result);
       });
     };
     enumerateDevices();
-  }, [selectedVideoSource]);
+  }, [videoSource]);
 
   const handleSelectChange = (e: any) => {
-    setSelectedVideoSource(e.target.value);
+    setVideoSource(e.target.value);
   };
 
   /**
@@ -59,7 +59,7 @@ export const Clips: React.FC = () => {
         ON
       </button>
       <select ref={selectRef} onChange={handleSelectChange}>
-        {_.map(videoSource, (deviceId: InputDeviceInfo, idx) => {
+        {_.map(enumerateDevices, (deviceId: InputDeviceInfo, idx) => {
           return (
             <option key={idx} value={deviceId.deviceId}>
               {deviceId.label}
