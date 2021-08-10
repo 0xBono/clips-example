@@ -1,16 +1,33 @@
-import { useEffect, useRef } from 'react';
+/* eslint-disable jsx-a11y/no-onchange */
+import _ from 'lodash';
+import { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Clips.module.scss';
 
 const cx = classNames.bind(styles);
 
 export const Clips: React.FC = () => {
+  const [videoSource, setVideoSource] = useState({});
+  const [selectedVideoSource, setSelectedVideoSource] = useState();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const selectRef = useRef<HTMLSelectElement>(null);
+
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+    navigator.mediaDevices.getUserMedia({ video: { deviceId: selectedVideoSource } }).then((stream) => {
       (videoRef.current as HTMLVideoElement).srcObject = stream;
     });
-  }, []);
+    const enumerateDevices = () => {
+      navigator.mediaDevices.enumerateDevices().then((devices) => {
+        const result = devices.filter((device) => device.kind === 'videoinput');
+        return setVideoSource(result);
+      });
+    };
+    enumerateDevices();
+  }, [selectedVideoSource]);
+
+  const handleSelectChange = (e: any) => {
+    setSelectedVideoSource(e.target.value);
+  };
 
   /**
    * @description 카메라 온/오프 과정에서 필요로 하는 MediaTracks 생성하는 함수
@@ -25,7 +42,7 @@ export const Clips: React.FC = () => {
    * @description 카메라 온/오프 과정에서 생기는 MediaTracks 제거하는 함수
    */
   const stopMediaTracks = () => {
-    const stream = (videoRef.current as HTMLVideoElement).srcObject as any;
+    const stream = videoRef.current?.srcObject as MediaStream & HTMLMediaElement;
     stream.getVideoTracks().forEach((track: any) => {
       track.stop();
       stream.srcObject = null;
@@ -41,6 +58,15 @@ export const Clips: React.FC = () => {
       <button className={cx('button')} onClick={startMediaTracks}>
         ON
       </button>
+      <select ref={selectRef} onChange={handleSelectChange}>
+        {_.map(videoSource, (deviceId: InputDeviceInfo, idx) => {
+          return (
+            <option key={idx} value={deviceId.deviceId}>
+              {deviceId.label}
+            </option>
+          );
+        })}
+      </select>
     </section>
   );
 };
